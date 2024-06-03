@@ -1,0 +1,5 @@
+aiogram
+pydantic-settings==2.2.1
+sqlalchemy==2.0.23
+asyncpg==0.29.0
+redis
