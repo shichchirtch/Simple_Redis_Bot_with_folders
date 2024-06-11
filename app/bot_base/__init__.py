@@ -1,2 +1,1 @@
-
-from .bot_base import User, init_models, session_marker
+from .bot_base import session_marker, User, init_models

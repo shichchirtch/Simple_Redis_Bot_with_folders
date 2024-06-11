@@ -1,7 +1,6 @@
 from aiogram import Router, F
 from filters import DATA_IS_DIGIT, DATA_IS_NOT_DIGIT
-from lexicon import (antwort, no_att_lost, positiv_answer, pre_start, restart,
-                     negative_answer, press_cancel, error, in_game_wrong_data)
+from lexicon import *
 from aiogram.types import Message, ReplyKeyboardRemove
 from external_functions import reset, update_table, check_attempts_lost_number, get_secret_number
 from aiogram.filters import StateFilter
@@ -10,7 +9,6 @@ from bot_states import FSM_IN_GAME
 from keyboards import keyboard_after_cancel
 import asyncio
 game_router = Router()
-
 
 
 @game_router.message(DATA_IS_NOT_DIGIT(), F.text.in_(positiv_answer), StateFilter(FSM_IN_GAME.after_start))

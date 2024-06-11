@@ -1,6 +1,6 @@
 from aiogram import Router, F
 from aiogram.filters import Command, CommandStart, StateFilter
-from lexicon import start_greeding, press_cancel, pre_start
+from lexicon import start_greeding, press_cancel, pre_start, game_rules
 from aiogram.types import Message
 from external_functions import (insert_new_user_in_table, reset,
                                 check_user_in_table, time_counter, get_start_time_from_table)
@@ -20,20 +20,29 @@ async def before_start(message:Message):
 async def start_command(message: Message, state: FSMContext):
     print(f'user {message.chat.first_name} press start')
     status = await state.get_state()
-    print('\n\n1 state.get_state()  =  ', type(status), status)
+    print('\n1 state.get_state()  =  ', type(status), status)
     user_name = message.chat.first_name
     user_tg_id = message.from_user.id
     await insert_new_user_in_table(user_tg_id, user_name)
     await state.set_state(FSM_IN_GAME.after_start)
-    print('\n\n2 state.get_state()  =  ', end=" ")
     status = await state.get_state()
-    print('\n\nstate.get_state()  =  ', type(status), status)
+    print('\nstate.get_state()  =  ', type(status), status)
     await message.answer(
         f'Привет, <b>{message.chat.first_name}</b> !  \U0001F60A\n {start_greeding}',
                     reply_markup=keyboard_after_cancel)
     print("Process finfshed")
 
+@command_router.message(Command(commands='help'))
+async def process_help_command(message: Message):
+    print("HELP START WORKS")
+    user_tg_id = message.from_user.id
+    if await check_user_in_table(user_tg_id):
+        print('we are here into help')
 
+        await message.answer(text=game_rules)
+    else:
+        await message.answer('Для начала работы с ботом введите /start')
+    print("HELP FINISHED !!!")
 
 
 @command_router.message(Command(commands='cancel'), StateFilter(FSM_IN_GAME.in_game, FSM_IN_GAME.after_start))

@@ -9,9 +9,12 @@ async def insert_new_user_in_table(user_tg_id:int, name:str):
         print('query =', query)
         needed_data = query.scalar()
         print('needed_data = ', needed_data)
+        start_time = int(time.monotonic())
         if not needed_data:
-            new_us = User(id=user_tg_id, user_name=name, start_time = int(time.monotonic()))
+            print("********************************************")
+            new_us = User(id=user_tg_id, user_name=name, start_time=start_time)
             session.add(new_us)
+            print('???????????????????????????????????????????????')
             await session.commit()
 
 async def get_secret_number(user_tg_id:int):
@@ -61,14 +64,14 @@ async def reset(user_tg_id):
         await session.commit()
 
 
-async def check_user_in_table(user_tg_id):
+async def check_user_in_table(user_tg_id:int):
     """Функция проверяет есть ли юзер в БД"""
     async with session_marker() as session:
-        print("\n\nWork check_user Function")
+        print("\nWork check_user Function")
         query = await session.execute(select(User).filter(User.id == user_tg_id))
         return query.one_or_none()
 
-async def get_start_time_from_table(user_tg_id)->int:
+async def get_start_time_from_table(user_tg_id:int)->int:
     async with session_marker() as session:
         print("\n\nWork get_start_time Function")
         query = await session.execute(select(User).filter(User.id == user_tg_id))
