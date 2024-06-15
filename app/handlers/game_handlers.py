@@ -16,8 +16,8 @@ async def process_positive_answer(message: Message,  state: FSMContext):
     user_tg_id = message.from_user.id
     await get_secret_number(user_tg_id)
     await state.set_state(FSM_IN_GAME.in_game)
-    status = await state.get_state()
-    print("state.get_state = ", status)
+    # status = await state.get_state()
+    # print("state.get_state = ", status)
     await message.answer(text="Я загадал число, начинайте угадывать !",
                          reply_markup=ReplyKeyboardRemove())
 
@@ -34,7 +34,7 @@ async def process_numbers_answer(message: Message, state: FSMContext):
     user_tg_id = message.from_user.id
     user_name = message.chat.first_name
     if await check_attempts_lost_number(user_tg_id):
-            print(f'\n Attempts for {user_name} = 0 Game done !')
+            # print(f'\n Attempts for {user_name} = 0 Game done !')
             await reset(user_tg_id)  # обнуляю таблицу
             await message.answer(text=f'{user_name} {antwort}')
             await state.set_state(FSM_IN_GAME.after_start)
@@ -45,7 +45,7 @@ async def process_numbers_answer(message: Message, state: FSMContext):
     else:
         res = await update_table(user_tg_id, int(message.text))
         status = await state.get_state()
-        print('\n\nstate.get_state()  =  ', type(status), status)
+        # print('\n\nstate.get_state()  =  ', type(status), status)
         if not res:
             await message.answer(text=f'<b>{user_name}</b> {antwort}',
                                  reply_markup=ReplyKeyboardRemove())

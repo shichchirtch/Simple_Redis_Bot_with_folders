@@ -18,15 +18,15 @@ async def before_start(message:Message):
 
 @command_router.message(CommandStart(), START_ONCE_ONLY())
 async def start_command(message: Message, state: FSMContext):
-    print(f'user {message.chat.first_name} press start')
+    # print(f'user {message.chat.first_name} press start')
     status = await state.get_state()
-    print('\n1 state.get_state()  =  ', type(status), status)
+    # print('\n1 state.get_state()  =  ', type(status), status)
     user_name = message.chat.first_name
     user_tg_id = message.from_user.id
     await insert_new_user_in_table(user_tg_id, user_name)
     await state.set_state(FSM_IN_GAME.after_start)
     status = await state.get_state()
-    print('\nstate.get_state()  =  ', type(status), status)
+    # print('\nstate.get_state()  =  ', type(status), status)
     await message.answer(
         f'Привет, <b>{message.chat.first_name}</b> !  \U0001F60A\n {start_greeding}',
                     reply_markup=keyboard_after_cancel)
@@ -34,10 +34,10 @@ async def start_command(message: Message, state: FSMContext):
 
 @command_router.message(Command(commands='help'))
 async def process_help_command(message: Message):
-    print("HELP START WORKS")
+    # print("HELP START WORKS")
     user_tg_id = message.from_user.id
     if await check_user_in_table(user_tg_id):
-        print('we are here into help')
+        # print('we are here into help')
 
         await message.answer(text=game_rules)
     else:
@@ -57,7 +57,7 @@ async def process_cancel_command(message: Message, state: FSMContext):
 
 @command_router.message(F.text.in_(['/schet','Узнать Счёт', 'VS']))
 async def uznatb_schet(message: Message):
-    print('\n\nузнать счет работает  ! ')
+    # print('\n\nузнать счет работает  ! ')
     us_tg_id = message.from_user.id
     if not await check_user_in_table(us_tg_id):
         await message.reply(pre_start)
