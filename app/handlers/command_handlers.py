@@ -24,9 +24,10 @@ async def start_command(message: Message, state: FSMContext):
     user_name = message.chat.first_name
     user_tg_id = message.from_user.id
     await insert_new_user_in_table(user_tg_id, user_name)
+
     await state.set_state(FSM_IN_GAME.after_start)
     status = await state.get_state()
-    # print('\nstate.get_state()  =  ', type(status), status)
+    print('\nstate.get_state()  =  ', type(status), status)
     await message.answer(
         f'Привет, <b>{message.chat.first_name}</b> !  \U0001F60A\n {start_greeding}',
                     reply_markup=keyboard_after_cancel)
