@@ -27,7 +27,7 @@ async def start_command(message: Message, state: FSMContext):
 
     await state.set_state(FSM_IN_GAME.after_start)
     status = await state.get_state()
-    print('\nstate.get_state()  =  ', type(status), status)
+    # print('\nstate.get_state()  =  ', type(status), status)
     await message.answer(
         f'Привет, <b>{message.chat.first_name}</b> !  \U0001F60A\n {start_greeding}',
                     reply_markup=keyboard_after_cancel)
