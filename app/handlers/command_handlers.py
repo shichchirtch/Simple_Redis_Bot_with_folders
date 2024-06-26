@@ -18,7 +18,7 @@ async def before_start(message:Message):
 
 @command_router.message(CommandStart(), START_ONCE_ONLY())
 async def start_command(message: Message, state: FSMContext):
-    print(f'user {message.chat.first_name} press start')
+    # print(f'user {message.chat.first_name} press start')
     status = await state.get_state()
     # print('\n1 state.get_state()  =  ', type(status), status)
     user_name = message.chat.first_name
