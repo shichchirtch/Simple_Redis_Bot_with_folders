@@ -21,8 +21,15 @@ async def get_secret_number(user_tg_id:int):
     async with session_marker() as session:
         query = await session.execute(select(User).filter(User.id == user_tg_id))
         needed_data = query.scalar()
-        needed_data.secret_number = randint(6, 100)
+        needed_data.secret_number = randint(1, 100)
         await session.commit()
+
+async def return_secret_number(user_tg_id:int):
+    async with session_marker() as session:
+        query = await session.execute(select(User).filter(User.id == user_tg_id))
+        needed_data = query.scalar()
+        secret_number = needed_data.secret_number
+        return secret_number
 
 
 async def update_table(user_tg_id:int, us_number:int):
@@ -33,9 +40,9 @@ async def update_table(user_tg_id:int, us_number:int):
         data_in = n.steps
         if us_number not in n.steps:
             n.attempts -= 1  # декремент попыток
-            print('\n\nn,steps =  ', n.steps)
+            print('\n\nn.steps =  ', n.steps)
             n.steps = data_in + [[us_number]]
-            print('n-steps =  ', n.steps, '\n\n')
+            print('n.steps =  ', n.steps, '\n\n')
             await session.commit()
             return None
         else:
@@ -43,7 +50,7 @@ async def update_table(user_tg_id:int, us_number:int):
             return "Do not repeat your numbers !"
 
 
-async def check_attempts_lost_number(user_tg_id):
+async def check_attempts_lost_number(user_tg_id:int):
     '''Функция проверяет количество оставшихся попыток'''
     async with session_marker() as session:
         query = await session.execute(select(User).filter(User.id == user_tg_id))
@@ -53,7 +60,7 @@ async def check_attempts_lost_number(user_tg_id):
             return True
         return False
 
-async def reset(user_tg_id):
+async def reset(user_tg_id:int):
     async with session_marker() as session:
         print("\n\nWork RESET Function")
         query = await session.execute(select(User).filter(User.id == user_tg_id))

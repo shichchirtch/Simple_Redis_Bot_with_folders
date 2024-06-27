@@ -2,7 +2,8 @@ from aiogram import Router, F
 from filters import DATA_IS_DIGIT, DATA_IS_NOT_DIGIT
 from lexicon import *
 from aiogram.types import Message, ReplyKeyboardRemove
-from external_functions import reset, update_table, check_attempts_lost_number, get_secret_number
+from external_functions import (reset, update_table, check_attempts_lost_number,
+                                get_secret_number, return_secret_number)
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from bot_states import FSM_IN_GAME
@@ -43,12 +44,26 @@ async def process_numbers_answer(message: Message, state: FSMContext):
             await message.answer(text=press_cancel, reply_markup=keyboard_after_cancel)
 
     else:
-        res = await update_table(user_tg_id, int(message.text))
+        user_taily = int(message.text)
+        res = await update_table(user_tg_id, user_taily)
         status = await state.get_state()
         # print('\n\nstate.get_state()  =  ', type(status), status)
         if not res:
-            await message.answer(text=f'<b>{user_name}</b> {antwort}',
-                                 reply_markup=ReplyKeyboardRemove())
+            secret_number = await return_secret_number(user_tg_id)
+            if user_taily > secret_number:
+                await message.answer(text=f'<b>{user_name}</b> {antwort_less}',
+                                     reply_markup=ReplyKeyboardRemove())
+            elif user_taily < secret_number:
+                await message.answer(text=f'<b>{user_name}</b> {antwort_more}',
+                                     reply_markup=ReplyKeyboardRemove())
+
+            else:
+                await message.answer(text=f'<b>{user_name}</b> {antwort_equal}',
+                                     reply_markup=ReplyKeyboardRemove())
+                await reset(user_tg_id)  # обнуляю таблицу
+                await state.set_state(FSM_IN_GAME.after_start)
+                await asyncio.sleep(1)
+                await message.answer(text=press_cancel, reply_markup=keyboard_after_cancel)
         else:
             await message.answer(text=f'<b>{user_name}</b>  + {res}',
                                  reply_markup=ReplyKeyboardRemove())
